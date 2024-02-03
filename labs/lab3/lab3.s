@@ -9,9 +9,6 @@
 
 _start:
   // ----------------- PRINT 10 + 15 = ------------------ //
-  LDR X0, =test// load the address of szX in register X0
-  LDR X0, [X0] // load the address of szX in register X0
-
   LDR X0, =szX  // load the address of szX in register X0
   BL putstring  // branch link to subroutine putstring
 
@@ -69,7 +66,6 @@ _start:
   SVC  0 // use 0 return code
 
 .data
-  test: .byte 155
   szX: .asciz "10"
   szY: .asciz "15"
   szSum: .skip 21
