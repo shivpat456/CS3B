@@ -54,7 +54,7 @@ _start:
   LDR X1, =szSum
   BL int64asc
 
-  MOV X0, X1  // load the value of X1 in register X0
+  LDR X0, =szSum  // load the value of X1 in register X0
   BL putstring  // branch link to subroutine putstring
 
   LDR X0, =chCr // load the address of chCr in register X0
