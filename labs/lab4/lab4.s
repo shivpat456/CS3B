@@ -1,77 +1,145 @@
 // Programmer: Carlos Aguilera
-// Lab #3
-// Purpose: print 10 + 15 = 25
+// Lab #4
+// Purpose: print 100 + 10000 + 10000000 + 10000000000 = (the actual result)
 // Author: Carlos Aguilera
-// Date Last Modified: 01/30/24
+// Date Last Modified: 02/03/24
 
 // set global start as the main entry
-.global _start
+  .global _start
+  .section .text
 
 _start:
-  // ----------------- PRINT 10 + 15 = ------------------ //
-  LDR X0, =szX  // load the address of szX in register X0
-  BL putstring  // branch link to subroutine putstring
+  // ----------------- SET DATA ------------------ //
+  LDR X0, =dbA  // load the address of dbA in register X0
+  MOV X1, #100  // load immediate value of 100 into X1
+  STR X1, [X0]  // store value of 100 in dbA
 
-  LDR X0, =szPlus // load the address of szPlus in register X0
-  BL putstring    // branch link to subroutine putstring
+  LDR X0, =dbB  // load the address of dbB in register X0
+  MOV X1, #10000  // load immediate value of 10000 into X1
+  STR X1, [X0]  // store value of 10000 in dbB
 
-  LDR X0, =szY // load the address of szY in register X0
-  BL putstring // branch link to subroutine putstring
+  LDR X0, =dbC  // load the address of dbC in register X0
+  MOV X1, #0x9680  // load immediate value of 10000000 into X1
+  STR X1, [X0]  // store value of 10000000 in dbC
 
-  LDR X0, =szEqual  // load the address of szY in register X0
-  BL putstring      // branch link to subroutine putstring
+  MOV X1, #0x98  // load immediate value of 10000000 into X1
+  STR X1, [X0, #2]  // store value of 10000000 in dbC
 
-  // ----------------- PRINT 10 + 15 = ------------------ //
+  LDR X0, =dbD
+  MOV X1, #0xE400
+  STR X1, [X0]
+
+  MOV X1, #0x540B
+  STR X1, [X0, #2]
+
+  MOV X1, #0x2
+  STR X1, [X0, #4]
+
+  // ----------------- SET DATA ------------------ //
 
   // ----------------- COMPUTE RESULT ------------------ //
-
-  LDR X0, =szX  // load the address of szX in register X0
-  BL ascint64   // branch link to subroutine ascint64
-  LDR X1, =dbX
-  STR X0, [X1]  // store the returned value into dbX
-
-  LDR X0, =szY  // load the address of szY in register X0
-  BL ascint64   // branch link to subroutine ascint64
-  LDR X1, =dbY
-  STR X0, [X1]  // store the returned value into dbY
-
-  LDR X0, =dbX  // load the address of dbX in register X0
+  LDR X0, =dbA
   LDR X0, [X0]
 
-  LDR X1, =dbY  // load the address of dbY in register X1
+  LDR X1, =dbB
   LDR X1, [X1]
 
-  ADD X2, X0, X1 // X2 = X0 + X1
-  LDR X3, =dbSum
-  STR X2, [X3] // store the value of X2 in dbSum
+  LDR X2, =dbC
+  LDR X2, [X2]
+
+  LDR X3, =dbD
+  LDR X3, [X3]
+
+  ADD X4, X0, X1  // X4 = dbA + dbB
+  ADD X5, X2, X3  // X5 = dbC + dbD
+  ADD X6, X4, X5  // X6 = X4 + X5
+
+  LDR X0, =dbSum
+  STR X6, [X0]
 
   // ----------------- COMPUTE RESULT ------------------ //
 
   // ----------------- PRINT RESULT ------------------ //
 
-  LDR X0, =dbSum
-  LDR X0, [X0]
-  LDR X1, =szSum
-  BL int64asc
+  // ------------- PRINT dbA -------------- //
+  LDR X0, =dbA  // load the address of dbA
+  LDR X0, [X0]  // load the value of dbA 
+  LDR X1, =szTemp // load the address of szTemp
+  BL int64asc // branch link to subroutine int64asc
 
-  MOV X0, X1  // load the value of X1 in register X0
+  LDR X0, =szTemp // load the value of X1 in register X0
   BL putstring  // branch link to subroutine putstring
 
+  // ------------- PRINT + -------------- //
+  LDR X0, =szPlus // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT dbB -------------- //
+  LDR X0, =dbB  // load the address of dbA
+  LDR X0, [X0]  // load the value of dbA 
+  LDR X1, =szTemp // load the address of szTemp
+  BL int64asc // branch link to subroutine int64asc
+
+  LDR X0, =szTemp // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT + -------------- //
+  LDR X0, =szPlus // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT dbC -------------- //
+  LDR X0, =dbC  // load the address of dbA
+  LDR X0, [X0]  // load the value of dbA 
+  LDR X1, =szTemp // load the address of szTemp
+  BL int64asc // branch link to subroutine int64asc
+
+  LDR X0, =szTemp // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT + -------------- //
+  LDR X0, =szPlus // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT dbD -------------- //
+  LDR X0, =dbD  // load the address of dbA
+  LDR X0, [X0]  // load the value of dbA 
+  LDR X1, =szTemp // load the address of szTemp
+  BL int64asc // branch link to subroutine int64asc
+
+  LDR X0, =szTemp // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT = -------------- //
+  LDR X0, =szEqual // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT dbD -------------- //
+  LDR X0, =dbSum  // load the address of dbA
+  LDR X0, [X0]  // load the value of dbA 
+  LDR X1, =szTemp // load the address of szTemp
+  BL int64asc // branch link to subroutine int64asc
+
+  LDR X0, =szTemp // load the value of X1 in register X0
+  BL putstring  // branch link to subroutine putstring
+
+  // ------------- PRINT NEW LINE -------------- //
   LDR X0, =chCr // load the address of chCr in register X0
   BL putch      // branch link to subroutine putch
+
+  // ----------------- PRINT RESULT ------------------ //
 
   MOV  X0, #0   // Setup the parameters to exit the program
   MOV  X8, #93  // and then call Linux to do it.
 
   SVC  0 // use 0 return code
 
-.data
-  szX: .asciz "10"
-  szY: .asciz "15"
-  szSum: .skip 21
+  .data
+  dbA: .quad 0
+  dbB: .quad 0
+  dbC: .quad 0
+  dbD: .quad 0
+  dbSum: .quad 0
+  szTemp: .skip 21
   szPlus: .asciz " + "
   szEqual: .asciz " = "
-  dbX: .quad 0
-  dbY: .quad 0
-  dbSum: .quad 0
   chCr: .byte 10
