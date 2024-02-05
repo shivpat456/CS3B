@@ -48,21 +48,29 @@ _start:
   
   // ---------------- STORE DATA -------------------- //
   
+  // load address of szA then branch link to ascint64
+  // store return value into dbA
   LDR X0, =szA
   BL ascint64
   LDR X1, =dbA
   STR X0, [X1]
 
+  // load address of szB then branch link to ascint64
+  // store return value into dbB
   LDR X0, =szB
   BL ascint64
   LDR X1, =dbB
   STR X0, [X1]
 
+  // load address of szC then branch link to ascint64
+  // store return value into dbC
   LDR X0, =szC
   BL ascint64
   LDR X1, =dbC
   STR X0, [X1]
 
+  // load address of szD then branch link to ascint64
+  // store return value into dbD
   LDR X0, =szD
   BL ascint64
   LDR X1, =dbD
@@ -70,51 +78,64 @@ _start:
 
   // ----------------- COMPUTE RESULT ------------------ //
 
+  // store value of dbA into X0
   LDR X0, =dbA
   LDR X0, [X0]
 
+  // store value of dbB into X1
   LDR X1, =dbB
   LDR X1, [X1]
 
+  // store value of dbC into X2
   LDR X2, =dbC
   LDR X2, [X2]
 
+  // store value of dbD into X3
   LDR X3, =dbD
   LDR X3, [X3]
 
-  SUB X4, X0, X1
-  SUB X5, X2, X3
-  ADD X6, X4, X5
+  SUB X4, X0, X1 // X4 = X0 - X1
+  SUB X5, X2, X3 // X5 = X2 - X3
+  ADD X6, X4, X5 // X6 = X4 - X5  
 
   LDR X0, =dbSum
   STR X6, [X0]
 
   // ----------------- PRINT RESULT ------------------ //
 
+  // print szA
   LDR X0, =szA
   BL putstring
 
+  // print szSub
   LDR X0, =szSub
   BL putstring
 
+  // print szB
   LDR X0, =szB
   BL putstring
 
+  // print szPlus
   LDR X0, =szPlus
   BL putstring
 
+  // print szC
   LDR X0, =szC
   BL putstring
 
+  // print szSub
   LDR X0, =szSub
   BL putstring
 
+  // print szD
   LDR X0, =szD
   BL putstring
 
+  // print szEqual
   LDR X0, =szEqual
   BL putstring
 
+  // store value of dbSum in X0 and convert into ascii
   LDR X0, =dbSum
   LDR X0, [X0]
   LDR X1, =szTemp
