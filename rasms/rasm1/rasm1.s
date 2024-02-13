@@ -203,16 +203,12 @@ _start:
   MOV X2, #8 // load the address of szSum into X0
   BL hex64asc // branch link into in64asc
 
-  BL putstring // branch link to putstring and print out szAddress
-
   LDR X0, =szTab
   BL putstring // branch link to putstring and print out szAddress
 
   LDR X0, =dbB // load the address 
   MOV X2, #8 // load the address of szSum into X0
   BL hex64asc // branch link into in64asc
-
-  BL putstring // branch link to putstring and print out szAddress
 
   LDR X0, =szTab
   BL putstring // branch link to putstring and print out szAddress
@@ -221,16 +217,12 @@ _start:
   MOV X2, #8 // load the address of szSum into X0
   BL hex64asc // branch link into in64asc
 
-  BL putstring // branch link to putstring and print out szAddress
-
   LDR X0, =szTab
   BL putstring // branch link to putstring and print out szAddress
 
   LDR X0, =dbD // load the address 
   MOV X2, #8 // load the address of szSum into X0
   BL hex64asc // branch link into in64asc
-
-  BL putstring // branch link to putstring and print out szAddress
 
   LDR X0, =szTab
   BL putstring // branch link to putstring and print out szAddress
