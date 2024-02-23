@@ -1,8 +1,8 @@
 // Programmer: Carlos Aguilera
-// RASM #1
-// Purpose: take 4 user inputted ints and perform (A + B) - (C + D) = display result
+// Exam #1
+// Purpose: Exam 1
 // Author: Carlos Aguilera
-// Date Last Modified: 02/10/24
+// Date Last Modified: 02/22/24
 
 // set global start as the main entry
   .global _start
