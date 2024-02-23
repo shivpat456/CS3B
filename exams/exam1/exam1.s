@@ -25,9 +25,9 @@
   szEnterX: .asciz "Enter x: "
   szEnterY: .asciz "Enter y: "
 
-  szName: .asciz  "Author: Carlos Aguilera"
-  szDate: .asciz  "Date: 02/22/24"
-  szProgram: .asciz   "Program: Exam 1"
+  szName: .asciz    "Author: Carlos Aguilera"
+  szDate: .asciz    "Date: 02/22/24"
+  szProgram: .asciz "Program: Exam 1"
 
   chCr: .byte 10
 
