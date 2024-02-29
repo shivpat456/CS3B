@@ -69,9 +69,6 @@ _start:
   MOV W1, '\n' // move the value of '\n' into W1
   STRB W1, [X0, 9] // store one byte into the address pointed by X0
 
-  LDR X0, =szMsg1 // load address of szMsg1 into X0
-  BL putstring
-
   LDR X0, =dbBig // load address of dbBig into X0
 
   MOV X1, #0xFFFFFFFF // Load the lower 32 bits of the constant into register X0
