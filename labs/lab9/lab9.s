@@ -1,8 +1,8 @@
 // Programmer: Carlos Aguilera
 // Lab #7
-// Purpose: Write a program that prompts the user for two (2) 64 bit signed numbers and displays the largest of the two. Execute a for loop that runs three times.
+// Purpose: declare array, get input for array, get sum, and display to terminal
 // Author: Carlos Aguilera
-// Date Last Modified: 03/01/24
+// Date Last Modified: 03/03/24
 
 // set global start as the main entry
   .global _start
