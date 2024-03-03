@@ -13,7 +13,7 @@
 
 _start:
   MOV X15, #0
-  foreach_in_10: // {
+  foreach_in_10_input: // {
     LDR X0, =szEnterIndex // load the address of szEnterX into X0
     BL putstring // branch link into putstring
 
@@ -49,11 +49,49 @@ _start:
     MOV X10, #9 // move the value of 2 into X10
     CMP X15, X10 // X15 - X10 result stored in CPSR register
     ADD X15, X15, #1 // X15 = X15 + 1
-    BLT foreach_in_10 // branch less than to foreach_in_3
+    BLT foreach_in_10_input // branch less than to foreach_in_3
   // }
 
-  // LDR X0, =chCr // load the address of szBuffer into X1
-  // BL putch // branch link to putstring
+  LDR X0, =chCr // load the address of szBuffer into X1
+  BL putch // branch link to putstring
+
+  MOV X15, #0
+  foreach_in_10_print: // {
+    LDR X1, =dbArray // load the address of dbArray into X1
+    MOV X3, #8 // move the value of 8 into X3
+    MUL X2, X15, X3 // X2 = X15 * X3
+    LDR X0, [X1, X2] // load the value of X1 shifted X2 into X0
+
+    // X0 previously calculated
+    LDR X1, =szBuffer // load the address of szBuffer into X1
+    BL int64asc // branch link into int64asc
+
+    LDR X0, =szBuffer // load the address of szBuffer into X1
+    BL putstring // branch link into putstring
+
+    LDR X0, =szPlus // load the address of szPlus into X1
+    BL putstring // branch link into putstring
+
+    MOV X10, #9 // move the value of 2 into X10
+    CMP X15, X10 // X15 - X10 result stored in CPSR register
+    ADD X15, X15, #1 // X15 = X15 + 1
+    BLT foreach_in_10_print // branch less than to foreach_in_3
+  // }
+
+  LDR X0, =szEquals // load the address of szPlus into X1
+  BL putstring // branch link into putstring
+
+  LDR X0, =dbSum // load the address of dbSum into X0
+  LDR X0, [X0] // load the value pointed by X0 into X0
+  LDR X1, =szBuffer // load the address of szBuffer into X1
+  BL int64asc // branch link into int64asc
+
+  LDR X0, =szBuffer // load the address of szBuffer into X1
+  BL putstring // branch link into putstring
+
+  LDR X0, =chCr // load the address of szBuffer into X1
+  BL putch // branch link to putstring
+
   MOV  X0, #0   // Setup the parameters to exit the program
   MOV  X8, #93  // and then call Linux to do it.
 
@@ -63,7 +101,7 @@ _start:
   szEnterIndex: .asciz "Enter Index "
   szColon: .asciz ": "
   szPlus: .asciz " + "
-  szEqual: .asciz " = "
+  szEquals: .asciz " = "
   szBuffer: .skip BUFFER
   dbArray:  .quad   0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   dbSum:  .quad   0
