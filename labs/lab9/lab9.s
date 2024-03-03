@@ -69,8 +69,16 @@ _start:
     LDR X0, =szBuffer // load the address of szBuffer into X1
     BL putstring // branch link into putstring
 
+    MOV X0, X15 // move the value of X15 into X0
+    ADD X0, X0, #1 // X0 = X0 + 1
+    MOV X1, #9 // move the value of 9 into X1
+
+    CMP X0, X1 // compare X0 and X1 ... X0 - X1 store result into CPSR register
+    BGT if_X0_GT_9 // branch greater than into if_X0_GT_9
+
     LDR X0, =szPlus // load the address of szPlus into X1
     BL putstring // branch link into putstring
+    if_X0_GT_9:
 
     MOV X10, #9 // move the value of 2 into X10
     CMP X15, X10 // X15 - X10 result stored in CPSR register
