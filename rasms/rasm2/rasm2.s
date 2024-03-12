@@ -140,30 +140,57 @@ _start:
     LDR X20, [X20]     // load the value at X20 into X20
 
     // ---------------------- CALCULATE & PRINT SUM ----------------------- //
-    ADD X0, X19, X20  // X21 = X19 + X20
+    ADDS X0, X19, X20        // X21 = X19 + X20
+    B.VS OVERFLOW_ADD_ERROR  // branch if equal to
+
     LDR X21, =szSum   // load the address of szSum into 21
     BL PRINT_RESULT   // branch link to PRINT_RESULT and print result
 
+    B OVERFLOW_ADD_ERROR_END // branch over OVERFLOW_ADD_ERROR_END 
+
+    OVERFLOW_ADD_ERROR:
+      LDR X0, =szOverflowAdd  // load the address of szOverflowAdd into X0
+      BL putstring            // branch link to putstring and print out szOverflowAdd
+    OVERFLOW_ADD_ERROR_END:
+
     // ---------------------- CALCULATE & PRINT DIFFERENCE ----------------------- //
-    SUB X0, X19, X20        // X21 = X19 - X20
+    SUBS X0, X19, X20        // X21 = X19 - X20
+    B.VS OVERFLOW_SUB_ERROR  // branch if equal to
+
     LDR X21, =szDifference  // load the address of szDifference into X21
     BL PRINT_RESULT         // branch link to PRINT_RESULT and print result
 
+    B OVERFLOW_SUB_ERROR_END // branch over OVERFLOW_SUB_ERROR_END 
+
+    OVERFLOW_SUB_ERROR:
+      LDR X0, =szOverflowSub  // load the address of szOverflowAdd into X0
+      BL putstring            // branch link to putstring and print out szOverflowAdd
+    OVERFLOW_SUB_ERROR_END:
+
     // ---------------------- CALCULATE & PRINT PRODUCT ----------------------- //
     MUL X0, X19, X20     // X21 = X19 * X20
+    B.VS MULTIPLY_ERROR  // branch if equal to
+
     LDR X21, =szProduct  // load the address of szProduct into X21
     BL PRINT_RESULT      // branch link to PRINT_RESULT and print result
 
+    B MULTIPLY_ERROR_END // branch over MULTIPLY_ERROR_END 
+
+    MULTIPLY_ERROR:
+      LDR X0, =szErrorMul  // load the address of szErrorMul into X0
+      BL putstring         // branch link to putstring and print out szErrorMul
+    MULTIPLY_ERROR_END:
+
     // ---------------------- CALCULATE & PRINT QUOTIENT/REMAINDER  ----------------------- //
-    CMP X20, #0
-    B.EQ QUOTIENT_REMAINDER_ERROR
+    CMP X20, #0                    // check if divisor is equal to 0
+    B.EQ QUOTIENT_REMAINDER_ERROR  // branch if equal to
 
     SDIV X0, X19, X20     // X0 = X19 / X20
     LDR X21, =szQuotient  // load the address of szQuotient into X21
     BL PRINT_RESULT       // branch link to PRINT_RESULT and print result
 
     SDIV X0, X19, X20      // X0 = X19 / X20
-    MSUB X0, X0, X19, X20  // multiply divisor and quotient and subtract dividend
+    MSUB X0, X0, X20, X19  // multiply dividend and quotient and subtract divisor
     LDR X21, =szRemainder  // load the address of szQuotient into X21
     BL PRINT_RESULT        // branch link to PRINT_RESULT and print result
 
