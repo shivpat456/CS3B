@@ -20,6 +20,7 @@
 
   dbFirst:  .quad 0
   dbSecond: .quad 0
+  dbTemp:   .quad 0
 
   szEnterFirstNumber: .asciz   "Enter your first number: "
   szEnterSecondNumber: .asciz   "Enter your second number: "
@@ -66,6 +67,37 @@ GET_INPUT:
     LDRB W0, [X0]      // load the first byte pointed at by X0 into W0
     CMP W0, #0         // compare W0 and 0 in other words (szBuffer == '')
     B.EQ END_PROGRAM   // branch if equal to END_PROGRAM
+
+    LDR X0, =szBuffer   // load the address of szBuffer into X0
+    BL String_length
+
+    MOV X8, X0
+    MOV X9, #0
+    FOR_EACH_CHARACTER:
+      CMP X9, X8
+      B.GE FOR_EACH_CHARACTER_END
+
+      LDR X0, =szBuffer   // load the address of szBuffer into X0
+      ADD X0, X0, X9
+      LDRB W0, [X0]
+
+      CMP W0, 48
+      B.LT INVALID_INPUT
+
+      CMP W0, 57
+      B.GT INVALID_INPUT
+
+      B CHARACTER_VALID
+
+      INVALID_INPUT:
+        LDR X0, =szInvalidString  // load the address of szOutsideQuad into X1
+        BL putstring            // branch link to putstring and print out szOutsideQuad
+        B GET_INPUT_LOOP
+
+      CHARACTER_VALID:
+        ADD X9, X9, #1
+        B FOR_EACH_CHARACTER
+    FOR_EACH_CHARACTER_END:
 
     LDR X0, =szBuffer  // load the address of szBuffer into X0
     BL ascint64        // branch link to putstring and print out szBuffer
@@ -214,6 +246,8 @@ _start:
 
     LDR X0, =chCr  // load the address of chCr into X0
     BL putch       // branch link to putch and print out chCr
+  
+    B MAIN_LOOP
 
   // ---------------------- END PROGRAM ----------------------- //
   END_PROGRAM:
