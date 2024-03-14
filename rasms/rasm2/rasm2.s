@@ -12,7 +12,7 @@
 // set global start as the main entry
   .global _start
 
-  .equ BUFFER, 21
+  .equ BUFFER, 512
 
   .section .data
 
@@ -80,6 +80,17 @@ GET_INPUT:
       LDR X0, =szBuffer  // load the address of szBuffer into X0
       ADD X0, X0, X9     // X0 = X0 + X9
       LDRB W0, [X0]      // load one byte from X0 into W0
+
+      CMP X9, 0             // check if at index 0
+      B.NE SKIP_SIGN_CHECK  // if not equals skip sign check
+
+      CMP W0, 43            // compare W0 and 57 store flags in CPSR
+      B.EQ CHARACTER_VALID  // branch greater than to INVALID_INPUt
+
+      CMP W0, 45            // compare W0 and 57 store flags in CPSR
+      B.EQ CHARACTER_VALID  // branch greater than to INVALID_INPUt
+
+      SKIP_SIGN_CHECK:
 
       CMP W0, 48          // compare W0 and 48 store flags in CPSR
       B.LT INVALID_INPUT  // branch less than INVALID_INPUT
@@ -211,18 +222,29 @@ _start:
     OVERFLOW_SUB_ERROR_END:
 
     // ---------------------- CALCULATE & PRINT PRODUCT ----------------------- //
-    MUL X0, X19, X20     // X21 = X19 * X20
-    B.VS MULTIPLY_ERROR  // branch if equal to
+    MOV X0, #0  // init sum
+    MOV X8, #0  // init index
+    MULTIPLY_LOOP:
+      CMP X8, X20  // index - X20 store flags in CPSR
+      B.GE MULTIPLY_LOOP_END;
 
+      ADDS X0, X0, X19     // X0 = X0 + X19
+      B.VC NO_MULTIPLY_ERROR  // branch if equal to
+
+      LDR X0, =szErrorMul  // load the address of szErrorMul into X0
+      BL putstring         // branch link to putstring and print out szErrorMul
+      B MULTIPLY_END
+
+      NO_MULTIPLY_ERROR:
+        ADD X8, X8, #1
+        B MULTIPLY_LOOP
+    MULTIPLY_LOOP_END:
+
+    MOV X0, X0
     LDR X21, =szProduct  // load the address of szProduct into X21
     BL PRINT_RESULT      // branch link to PRINT_RESULT and print result
 
-    B MULTIPLY_ERROR_END // branch over MULTIPLY_ERROR_END 
-
-    MULTIPLY_ERROR:
-      LDR X0, =szErrorMul  // load the address of szErrorMul into X0
-      BL putstring         // branch link to putstring and print out szErrorMul
-    MULTIPLY_ERROR_END:
+    MULTIPLY_END:
 
     // ---------------------- CALCULATE & PRINT QUOTIENT/REMAINDER  ----------------------- //
     CMP X20, #0                    // check if divisor is equal to 0
@@ -251,8 +273,14 @@ _start:
 
   // ---------------------- END PROGRAM ----------------------- //
   END_PROGRAM:
+    LDR X0, =chCr  // load the address of chCr into X0
+    BL putch       // branch link to putch and print out chCr
+  
     LDR X0, =szProgramResponse  // load the address of szProgramResponse into X0
     BL putstring                // branch link to putstring and print out szDate
+
+    LDR X0, =chCr  // load the address of chCr into X0
+    BL putch       // branch link to putch and print out chCr
 
     LDR X0, =chCr  // load the address of chCr into X0
     BL putch       // branch link to putch and print out chCr
