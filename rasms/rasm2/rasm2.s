@@ -77,26 +77,26 @@ GET_INPUT:
       CMP X9, X8
       B.GE FOR_EACH_CHARACTER_END
 
-      LDR X0, =szBuffer   // load the address of szBuffer into X0
-      ADD X0, X0, X9
-      LDRB W0, [X0]
+      LDR X0, =szBuffer  // load the address of szBuffer into X0
+      ADD X0, X0, X9     // X0 = X0 + X9
+      LDRB W0, [X0]      // load one byte from X0 into W0
 
-      CMP W0, 48
-      B.LT INVALID_INPUT
+      CMP W0, 48          // compare W0 and 48 store flags in CPSR
+      B.LT INVALID_INPUT  // branch less than INVALID_INPUT
 
-      CMP W0, 57
-      B.GT INVALID_INPUT
+      CMP W0, 57          // compare W0 and 57 store flags in CPSR
+      B.GT INVALID_INPUT  // branch greater than to INVALID_INPUt
 
-      B CHARACTER_VALID
+      B CHARACTER_VALID  // branch to CHARACTER_VALID
 
       INVALID_INPUT:
         LDR X0, =szInvalidString  // load the address of szOutsideQuad into X1
         BL putstring            // branch link to putstring and print out szOutsideQuad
-        B GET_INPUT_LOOP
+        B GET_INPUT_LOOP  // branch to GET_INPUT_LOOP
 
       CHARACTER_VALID:
-        ADD X9, X9, #1
-        B FOR_EACH_CHARACTER
+        ADD X9, X9, #1  // X9 = X9 + 1
+        B FOR_EACH_CHARACTER  // branch to FOR_EACH_CHARACTER
     FOR_EACH_CHARACTER_END:
 
     LDR X0, =szBuffer  // load the address of szBuffer into X0
@@ -109,7 +109,7 @@ GET_INPUT:
     LDR X0, =chCr  // load the address of chCr into X0
     BL putch       // branch link to putch and print out chCr
 
-    B GET_INPUT_LOOP
+    B GET_INPUT_LOOP  // branch to GET_INPUT_LOOP
 
     INPUT_VALID:
       STR X0, [X20]      // store the value of X0 into X20
