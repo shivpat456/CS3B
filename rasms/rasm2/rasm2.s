@@ -43,6 +43,7 @@
   szErrorMul:      .asciz "RESULT OUTSIDE ALLOWABLE 64 BIT SIGNED INTEGER RANGE WHEN MULTIPLYING\n"
 
   szInvalidString: .asciz "INVALID NUMERIC STRING. RE-ENTER VALUE\n"
+  szOutsideQuad:   .asciz "NUMBER OUTSIDE ALLOWABLE 64 BIT SIGNED INTEGER RE-ENTER VALUE"
 
   chCr: .byte 10
 
@@ -68,8 +69,18 @@ GET_INPUT:
 
     LDR X0, =szBuffer  // load the address of szBuffer into X0
     BL ascint64        // branch link to putstring and print out szBuffer
+    B.VC INPUT_VALID
 
-    STR X0, [X20]      // store the value of X0 into X20
+    LDR X0, =szOutsideQuad  // load the address of szOutsideQuad into X1
+    BL putstring            // branch link to putstring and print out szOutsideQuad
+
+    LDR X0, =chCr  // load the address of chCr into X0
+    BL putch       // branch link to putch and print out chCr
+
+    B GET_INPUT_LOOP
+
+    INPUT_VALID:
+      STR X0, [X20]      // store the value of X0 into X20
 
   LDR X30, [sp], #16  // pop link register off the stack for use
 
