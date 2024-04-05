@@ -17,7 +17,20 @@
 factorial:
   STR X30, [SP, #-16]! // push link register onto the stack
 
-  ADD X0, X0, #5  // X0 = X0 + 5
+  CMP X0, #1      // X0 - 1 store result into CPSR registers
+  B.EQ finshed    // branch if equals to finished
+
+  STR X0, [SP, #-16]! // push X0 onto the stack
+
+  SUB X0, X0, #1  // X0 = X0 - 1
+  BL factorial    // branch link into factorial
+
+  LDR X1, [SP], #16 // pop X0 off the stack into X1
+
+  MUL X0, X0, X1  // multiply previous X1 by return value X0
+
+  finshed:
+    MOV X0, X0  // X0 = X0 (just my preference)
 
   LDR X30, [SP], #16 // pop link register off the stack
   

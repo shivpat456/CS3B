@@ -18,7 +18,8 @@
     szPrompt0:   .asciz "Calculate factorial of: "
     szPrompt1:   .asciz "The factorial of -> "
     szPrompt2:   .asciz " is: "
-    szBuffer:   .skip BUFFER
+    szN:         .skip BUFFER
+    szResult:   .skip BUFFER
 
   .section .text
 
@@ -26,23 +27,32 @@ _start:
   LDR X0, =szPrompt0  // load the address of szPrompt into X0
   BL putstring        // branch link to putstring
 
-  LDR X0, =szBuffer  // load the address of szBuffer into X0
+  LDR X0, =szN       // load the address of szResult into X0
   BL getstring       // branch link to putstring
 
-  LDR X0, =szBuffer  // load the address of szBuffer into X0
+  LDR X0, =szN       // load the address of szResult into X0
   BL ascint64        // branch link to ascint64
 
   MOV X0, X0    // X0 = X0 (just my preference)
   BL factorial  // branch link to ascint64
 
   MOV X0, X0         // X0 = X0 (just my preference)
-  LDR X1, =szBuffer  // load the address of szBuffer into X1
+  LDR X1, =szResult  // load the address of szResult into X1
   BL int64asc        // branch link to int64asc
 
-  LDR X0, =szBuffer  // load the address of szBuffer into X0
-  BL putstring       // branch link to putstring
+  LDR X0, =szPrompt1  // load the address of szPrompt1 into X0
+  BL putstring        // branch link to putstring
 
-  LDR X0, =chCr // load the address of szBuffer into X1
+  LDR X0, =szN  // load the address of szN into X1
+  BL putstring  // branch link to putstring
+
+  LDR X0, =szPrompt2  // load the address of szPrompt2 into X0
+  BL putstring        // branch link to putstring
+
+  LDR X0, =szResult    // load the address of szResult into X0
+  BL putstring         // branch link to putstring
+
+  LDR X0, =chCr // load the address of szResult into X1
   BL putch // branch link to putstring
 
   MOV  X0, #0   // Setup the parameters to exit the program
