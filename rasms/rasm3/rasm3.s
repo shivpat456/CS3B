@@ -27,9 +27,15 @@
 
 _start:
   LDR X0, =szTest1   // load the address of szTest1 into X0
-  BL String_toUpperCase // branch link to String_concat
+  MOV X1, #84   // load the address of szTest1 into X0
+  MOV X2, #3   // load the address of szTest1 into X0
+  BL String_indexOf_2 // branch link to String_concat
 
-  MOV X0, X0   // load the address of szBuffer into X0
+  MOV X0, X0          // move X3 into X0
+  LDR X1, =szBuffer   // load the address of szBuffer into X0
+  BL int64asc         // branch link to int64asc
+
+  LDR X0, =szBuffer   // load the address of szBuffer into X0
   BL putstring
 
   LDR X0, =chCr  // load the address of chCr into X0
