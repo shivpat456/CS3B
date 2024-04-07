@@ -12,6 +12,8 @@
   .global String_toUpperCase
   .global String_indexOf_1
   .global String_indexOf_2
+  .global String_lastIndexOf_1
+  .global String_lastIndexOf_2
 
   .section .data
 
@@ -266,3 +268,84 @@ String_indexOf_2:
 
   RET
 
+
+// String_lastIndexOf helper function
+// X0: Must contain null terminated string
+// X1: Must contain char to match against
+// X2: Must contain starting point
+last_index_of_char:
+  STR X30, [SP, #-16]! // push link register onto the stack
+
+  last_index_of_char_loop:
+    CMP X2, 0                  // X6 - 0 and set CPSR register
+    B.EQ last_index_of_char_end    // branch if equal to
+
+    LDRB W3, [X0, X2]          // load the value at the address X4 with offset X5
+
+    // if W2 == character
+    CMP W3, W1
+    B.NE last_index_of_char_continue
+
+    // we have found character return index
+    MOV X0, X2
+    LDR X30, [SP], #16   // pop link register off the stack
+    RET
+
+    last_index_of_char_continue:
+      SUB X2, X2, #1  // sub X2 by one
+
+    B last_index_of_char_loop
+  last_index_of_char_end:
+
+  MOV X0, -1         // set W2 equal to 0
+
+  LDR X30, [SP], #16   // pop link register off the stack
+
+  RET
+
+// Subroutine String_lastIndexOf_1:
+//      return the index of the found char otherwise return -1
+// X0: Must contain null terminated string
+// X1: Must contain char to match against
+// LR: Must contain the return address
+// All AAPCS required registers are preserved,  X19-X29 and SP.
+String_lastIndexOf_1:
+  STR X30, [SP, #-16]! // push link register onto the stack
+  STR X19, [SP, #-16]! // push X19 onto the stack
+  STR X20, [SP, #-16]! // push X20 onto the stack
+
+  MOV X19, X0
+  MOV X20, X1
+
+  MOV X0, X19  // move the address of the first string into X4
+  BL count_bytes
+
+  MOV X2, X0  // set starting point to zero
+  MOV X0, X19  // move string into X0
+  MOV X1, X20  // set params
+  BL last_index_of_char
+
+  LDR X20, [SP], #16   // pop link X20 off the stack
+  LDR X19, [SP], #16   // pop link X19 off the stack
+  LDR X30, [SP], #16   // pop link register off the stack
+
+  RET
+
+// Subroutine String_lastIndexOf_2:
+//      return the index of the found char otherwise return -1
+// X0: Must contain null terminated string
+// X1: Must contain char to match against
+// X2: Must contain starting point
+// LR: Must contain the return address
+// All AAPCS required registers are preserved,  X19-X29 and SP.
+String_lastIndexOf_2:
+  STR X30, [SP, #-16]! // push link register onto the stack
+
+  MOV X0, X0  // move string into X0
+  MOV X1, X1  // set params
+  MOV X2, X2  // set starting point to zero
+  BL last_index_of_char
+
+  LDR X30, [SP], #16   // pop link register off the stack
+
+  RET

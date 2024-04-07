@@ -27,9 +27,9 @@
 
 _start:
   LDR X0, =szTest1   // load the address of szTest1 into X0
-  MOV X1, #84   // load the address of szTest1 into X0
-  MOV X2, #3   // load the address of szTest1 into X0
-  BL String_indexOf_2 // branch link to String_concat
+  MOV X1, #116   // load the address of szTest1 into X0
+  MOV X2, #14
+  BL String_lastIndexOf_2 // branch link to String_concat
 
   MOV X0, X0          // move X3 into X0
   LDR X1, =szBuffer   // load the address of szBuffer into X0
