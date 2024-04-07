@@ -17,21 +17,24 @@
 
   szBuffer:  .skip BUFFER
 
-  szRasm3: .asciz   "In RASM 3!"
+  szTest1: .asciz   "Cat in the hat."
+  szTest2: .asciz   "Green eggs and ham."
+  szTest3: .asciz   "cat in the hat."
 
   chCr: .byte 10
 
   .section .text
 
 _start:
-  LDR X0, =szRasm3   // load the address of szRasm3 into X0
-  BL putstring       // branch link to putstring and print out szRasm3
+  LDR X0, =szTest1   // load the address of szTest1 into X0
+  LDR X1, =szTest2   // load the address of szTest2 into X0
+  BL String_concat   // branch link to String_concat
+
+  MOV X0, X0   // load the address of szBuffer into X0
+  BL putstring
 
   LDR X0, =chCr  // load the address of chCr into X0
   BL putch       // branch link to putch and print out chCr
-
-  BL String1       // branch link to String1
-  BL String2       // branch link to String2
 
   MOV   X0, #0   // Use 0 return code
   MOV   X8, #93  // Service Command Code 93 terminates this program
