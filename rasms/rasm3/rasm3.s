@@ -17,8 +17,8 @@
 
   szBuffer:  .skip BUFFER
 
-  szTest1: .asciz   "This is a BeginnersBook tutorial"
-  szTest2: .asciz   "Beginners"
+  szTest1: .asciz   "beginnersbook is for beginners"
+  szTest2: .asciz   "beginners"
   szTest3: .asciz   "cat in the hat."
 
   chCr: .byte 10
@@ -28,7 +28,7 @@
 _start:
   LDR X0, =szTest1   // load the address of szTest1 into X0
   LDR X1, =szTest2   // load the address of szTest1 into X0
-  BL String_indexOf_3 // branch link to String_concat
+  BL String_lastIndexOf_3 // branch link to String_concat
 
   LDR X1, =szBuffer   // load the address of szBuffer into X0
   BL int64asc         // branch link to int64asc

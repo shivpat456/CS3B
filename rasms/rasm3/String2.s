@@ -15,6 +15,7 @@
   .global String_indexOf_3
   .global String_lastIndexOf_1
   .global String_lastIndexOf_2
+  .global String_lastIndexOf_3
   .global String_replace
 
   .section .text
@@ -456,6 +457,80 @@ String_lastIndexOf_2:
   LDR X30, [SP], #16   // pop link register off the stack
 
   RET
+
+// Subroutine String_lastIndexOf_3:
+//      return the index of the found char otherwise return -1
+// X0: Must contain null terminated string
+// X1: Must contain string to match against also null terminated
+// LR: Must contain the return address
+// All AAPCS required registers are preserved,  X19-X29 and SP.
+String_lastIndexOf_3:
+  STR X30, [SP, #-16]! // push link register onto the stack
+  STR X19, [SP, #-16]! // push X19 onto the stack
+  STR X20, [SP, #-16]! // push X20 onto the stack
+
+  MOV X19, X0  // move the value of x0 into x19
+  MOV X20, X1  // move the value of x1 into x20
+
+  MOV X0, X19  // move the address of the first string into X4
+  BL count_bytes
+
+  MOV X0, X0  // move the value of 0 into X0 (this is our index)
+  lastIndexOf_3_loop:
+    CMP X0, 0                  // X6 - 0 and set CPSR register
+    B.LT lastIndexOf_3_end    // branch if equal to
+
+    STR X0, [SP, #-16]! // push X20 onto the stack
+    MOV X0, X20  // move the address of the first string into X4
+    BL count_bytes
+
+    MOV X1, X0
+    LDR X0, [SP], #16   // pop X20 off the stack
+
+    MOV X2, #1  // this is our matched variable set to true
+    MOV X6, #0  // this is our matched variable set to true
+
+    lastIndexOf_3_inner_loop:
+      CMP X1, 0                  // X6 - 0 and set CPSR register
+      B.LT lastIndexOf_3_inner_loop_end    // branch if equal to
+
+      SUB X3, X0, X6      // add both inner and index
+      LDRB W4, [X19, X3]  // load the value at the address X4 with offset X5
+      LDRB W5, [X20, X1]  // load the value at the address X4 with offset X5
+
+      CMP W4, W5  // W4 - W5 and store result into the CPSR register
+      B.EQ lastIndexOf_3_inner_loop_continue
+
+      // they did not equal lets break and set matched to false
+      MOV X2, #0  // set X2 equal to false
+      B lastIndexOf_3_inner_loop_end
+
+      lastIndexOf_3_inner_loop_continue:
+        SUB X1, X1, #1  // decrement inner_index by one
+        ADD X6, X6, #1  // increment inner index by one
+        B lastIndexOf_3_inner_loop
+    lastIndexOf_3_inner_loop_end:
+
+    CMP X2, #1  // is matched true
+    B.NE lastIndexOf_3_continue
+
+    SUB X6, X6, #1
+    SUB X0, X0, X6
+    B lastIndexOf_3_return
+
+    lastIndexOf_3_continue:
+      ADD X0, X0, #1  // increment index by one
+      B lastIndexOf_3_loop
+  lastIndexOf_3_end:
+
+  MOV X0, -1  // no string found 
+
+  lastIndexOf_3_return:
+    LDR X20, [SP], #16   // pop X20 off the stack
+    LDR X19, [SP], #16   // pop X19 off the stack
+    LDR X30, [SP], #16   // pop link register off the stack
+
+    RET
 
 // Subroutine String_replace:
 //      return new allocated string with replaced char if found
