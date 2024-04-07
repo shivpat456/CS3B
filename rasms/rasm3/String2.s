@@ -12,6 +12,7 @@
   .global String_toUpperCase
   .global String_indexOf_1
   .global String_indexOf_2
+  .global String_indexOf_3
   .global String_lastIndexOf_1
   .global String_lastIndexOf_2
   .global String_replace
@@ -296,6 +297,84 @@ String_indexOf_2:
 
   RET
 
+// Subroutine String_indexOf_3:
+//      return the index of the found char otherwise return -1
+// X0: Must contain null terminated string
+// X1: Must contain string to match against also null terminated
+// LR: Must contain the return address
+// All AAPCS required registers are preserved,  X19-X29 and SP.
+
+// Psuedo
+// index = 0
+// for each char0 in x0
+//   char0 = x0[index]
+//   if char0 == \0
+//     return -1
+
+//   inner_index = 0
+//   matched = true
+//   for_each_matched_character
+//       if [x0, index + inner_index] != [x1, inner_index]
+//         matched = false
+//         break
+  
+//   if matched:
+//     return index
+  
+//   ++index
+String_indexOf_3:
+  STR X30, [SP, #-16]! // push link register onto the stack
+  STR X19, [SP, #-16]! // push X19 onto the stack
+  STR X20, [SP, #-16]! // push X20 onto the stack
+
+  MOV X19, X0  // move the value of x0 into x19
+  MOV X20, X1  // move the value of x1 into x20
+
+  MOV X0, #0  // move the value of 0 into X0 (this is our index)
+  indexOf_3_loop:
+    LDRB W1, [X19, X0]          // load the value at the address X4 with offset X5
+    CMP W1, 0                  // X6 - 0 and set CPSR register
+    B.EQ indexOf_3_end    // branch if equal to
+
+    MOV X1, #0  // move the value of 0 into x1 this is our inner index
+    MOV X2, #1  // this is our matched variable set to true
+
+    indexOf_3_inner_loop:
+      LDRB W3, [X20, X1]             // load the value at the address X4 with offset X5
+      CMP W3, 0                      // X6 - 0 and set CPSR register
+      B.EQ indexOf_3_inner_loop_end  // branch if equal to
+
+      ADD X3, X0, X1      // add both inner and index
+      LDRB W4, [X19, X3]  // load the value at the address X4 with offset X5
+      LDRB W5, [X20, X1]  // load the value at the address X4 with offset X5
+
+      CMP W4, W5  // W4 - W5 and store result into the CPSR register
+      B.EQ indexOf_3_inner_loop_continue
+
+      // they did not equal lets break and set matched to false
+      MOV X2, #0  // set X2 equal to false
+      B indexOf_3_inner_loop_end
+
+      indexOf_3_inner_loop_continue:
+        ADD X1, X1, #1  // increment inner_index by one
+        B indexOf_3_inner_loop
+    indexOf_3_inner_loop_end:
+
+    CMP X2, #1  // is matched true
+    B.EQ indexOf_3_return
+
+    ADD X0, X0, #1  // increment index by one
+    B indexOf_3_loop
+  indexOf_3_end:
+
+  MOV X0, -1  // no string found 
+
+  indexOf_3_return:
+    LDR X20, [SP], #16   // pop X20 off the stack
+    LDR X19, [SP], #16   // pop X19 off the stack
+    LDR X30, [SP], #16   // pop link register off the stack
+
+    RET
 
 // String_lastIndexOf helper function
 // X0: Must contain null terminated string
