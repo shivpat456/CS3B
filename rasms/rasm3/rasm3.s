@@ -17,7 +17,7 @@
 
   szBuffer:  .skip BUFFER
 
-  szTest1: .asciz   "Cat in the hat."
+  szTest1: .asciz   "Cat in The Hat."
   szTest2: .asciz   "Green eggs and ham."
   szTest3: .asciz   "cat in the hat."
 
@@ -27,8 +27,7 @@
 
 _start:
   LDR X0, =szTest1   // load the address of szTest1 into X0
-  LDR X1, =szTest2   // load the address of szTest2 into X0
-  BL String_concat   // branch link to String_concat
+  BL String_toUpperCase // branch link to String_concat
 
   MOV X0, X0   // load the address of szBuffer into X0
   BL putstring
