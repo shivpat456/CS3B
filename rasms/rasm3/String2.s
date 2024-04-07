@@ -14,6 +14,7 @@
   .global String_indexOf_2
   .global String_lastIndexOf_1
   .global String_lastIndexOf_2
+  .global String_replace
 
   .section .data
 
@@ -36,6 +37,39 @@ count_bytes:
   count_bytes_loop_end:
 
   MOV X0, X1
+
+  RET  // return
+
+// global helper function
+copy_string:
+  STR X30, [SP, #-16]! // push link register onto the stack
+  STR X19, [SP, #-16]! // push X19 onto the stack
+
+  MOV X19, X0  // move the address of the first string into X4
+
+  MOV X0, X19  // move the address of the first string into X4
+  BL count_bytes
+
+  MOV  X0, X0 // move the value of 16 into X0
+  BL   malloc // branch link to malloc 
+
+  MOV X1, #0  // move 0 into X5
+  copy_string_loop:
+    LDRB W2, [X19, X1]          // load the value at the address X4 with offset X5
+    CMP W2, 0                  // X6 - 0 and set CPSR register
+    B.EQ copy_string_loop_end  // branch if equal to
+
+    STRB W2, [X0, X1]
+    ADD X1, X1, #1  // increment X4 by one
+
+    B copy_string_loop
+  copy_string_loop_end:
+
+  MOV W2, #0
+  STRB W2, [X0, X1]
+
+  LDR X19, [SP], #16   // pop link X19 off the stack
+  LDR X30, [SP], #16   // pop link register off the stack
 
   RET  // return
 
@@ -346,6 +380,49 @@ String_lastIndexOf_2:
   MOV X2, X2  // set starting point to zero
   BL last_index_of_char
 
+  LDR X30, [SP], #16   // pop link register off the stack
+
+  RET
+
+// Subroutine String_replace:
+//      return new allocated string with replaced char if found
+// X0: Must contain null terminated string
+// X1: Must contain old char to match against
+// X2: Must contain new char to replace
+// LR: Must contain the return address
+// All AAPCS required registers are preserved,  X19-X29 and SP.
+String_replace:
+  STR X30, [SP, #-16]! // push link register onto the stack
+  STR X19, [SP, #-16]! // push X19 onto the stack
+  STR X20, [SP, #-16]! // push X20 onto the stack
+  STR X21, [SP, #-16]! // push X21 onto the stack
+
+  MOV X19, X0  // store allocated string into X19
+  MOV X20, X1  // store old char
+  MOV X21, X2  // store new char
+
+  MOV X0, X19
+  BL copy_string
+
+  MOV X19, X0  // store allocated string into X19
+
+  MOV X0, X19  // move string into X0
+  MOV X1, X20  // set params
+  MOV X2, #0  // set starting point to zero
+  BL index_of_char
+
+  CMP X0, -1  // check if char was not found if so then exit
+  B.EQ String_replace_return
+
+  STRB W21, [X19, X0]  // given index of old char replace with new char
+
+  String_replace_return:
+
+  MOV X0, X19  // set allocated string to return register
+
+  LDR X21, [SP], #16   // pop link X21 off the stack
+  LDR X20, [SP], #16   // pop link X20 off the stack
+  LDR X19, [SP], #16   // pop link X19 off the stack
   LDR X30, [SP], #16   // pop link register off the stack
 
   RET
