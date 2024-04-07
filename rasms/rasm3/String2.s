@@ -4,7 +4,7 @@
 // Class: CS 3B
 // Date: March 30, 2024 at 9:04 PM
 // Purpose:
-//    DO SOMETHING LOL
+//     Some sicko string operations
 //*****************************************************************************
 
   .global String_concat
@@ -15,12 +15,6 @@
   .global String_lastIndexOf_1
   .global String_lastIndexOf_2
   .global String_replace
-
-  .section .data
-
-  szBuffer:  .skip 21
-
-  chCr: .byte 10
 
   .section .text
 
