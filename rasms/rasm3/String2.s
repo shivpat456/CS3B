@@ -541,36 +541,32 @@ String_lastIndexOf_3:
 // All AAPCS required registers are preserved,  X19-X29 and SP.
 String_replace:
   STR X30, [SP, #-16]! // push link register onto the stack
-  STR X19, [SP, #-16]! // push X19 onto the stack
   STR X20, [SP, #-16]! // push X20 onto the stack
   STR X21, [SP, #-16]! // push X21 onto the stack
 
-  MOV X19, X0  // store allocated string into X19
   MOV X20, X1  // store old char
   MOV X21, X2  // store new char
 
-  MOV X0, X19
   BL copy_string
 
-  MOV X19, X0  // store allocated string into X19
+  MOV X1, #0  // move 0 into X5
+  replace_loop:
+    LDRB W2, [X0, X1]          // load the value at the address X4 with offset X5
+    CMP W2, 0                  // X6 - 0 and set CPSR register
+    B.EQ replace_loop_end  // branch if equal to
 
-  MOV X0, X19  // move string into X0
-  MOV X1, X20  // set params
-  MOV X2, #0  // set starting point to zero
-  BL index_of_char
+    CMP W2, W20
+    B.NE replace_loop_continue
 
-  CMP X0, -1  // check if char was not found if so then exit
-  B.EQ String_replace_return
+    STRB W21, [X0, X1]  // given index of old char replace with new char
 
-  STRB W21, [X19, X0]  // given index of old char replace with new char
-
-  String_replace_return:
-
-  MOV X0, X19  // set allocated string to return register
+    replace_loop_continue:
+      ADD X1, X1, #1  // increment X4 by one
+      B replace_loop
+  replace_loop_end:
 
   LDR X21, [SP], #16   // pop link X21 off the stack
   LDR X20, [SP], #16   // pop link X20 off the stack
-  LDR X19, [SP], #16   // pop link X19 off the stack
   LDR X30, [SP], #16   // pop link register off the stack
 
   RET
