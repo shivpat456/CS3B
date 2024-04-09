@@ -475,6 +475,7 @@ String_lastIndexOf_3:
   MOV X0, X19  // move the address of the first string into X4
   BL count_bytes
 
+  SUB X0, X0, #1
   MOV X0, X0  // move the value of 0 into X0 (this is our index)
   lastIndexOf_3_loop:
     CMP X0, 0                  // X6 - 0 and set CPSR register
@@ -484,6 +485,7 @@ String_lastIndexOf_3:
     MOV X0, X20  // move the address of the first string into X4
     BL count_bytes
 
+    SUB X0, X0, #1
     MOV X1, X0
     LDR X0, [SP], #16   // pop X20 off the stack
 
