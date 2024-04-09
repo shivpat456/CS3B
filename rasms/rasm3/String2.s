@@ -488,7 +488,7 @@ String_lastIndexOf_3:
     LDR X0, [SP], #16   // pop X20 off the stack
 
     MOV X2, #1  // this is our matched variable set to true
-    MOV X6, #0  // this is our matched variable set to true
+    MOV X6, #0  // inner index loop
 
     lastIndexOf_3_inner_loop:
       CMP X1, 0                  // X6 - 0 and set CPSR register
@@ -519,7 +519,7 @@ String_lastIndexOf_3:
     B lastIndexOf_3_return
 
     lastIndexOf_3_continue:
-      ADD X0, X0, #1  // increment index by one
+      SUB X0, X0, #1  // increment index by one
       B lastIndexOf_3_loop
   lastIndexOf_3_end:
 
